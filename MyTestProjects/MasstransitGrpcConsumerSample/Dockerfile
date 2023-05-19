@@ -11,6 +11,7 @@ COPY ["src/Transports/MassTransit.GrpcTransport/MassTransit.GrpcTransport.csproj
 COPY ["src/MassTransit.Newtonsoft/MassTransit.Newtonsoft.csproj", "src/MassTransit.Newtonsoft/"]
 COPY ["src/MassTransit/MassTransit.csproj", "src/MassTransit/"]
 COPY ["src/MassTransit.Abstractions/MassTransit.Abstractions.csproj", "src/MassTransit.Abstractions/"]
+COPY ["MyTestProjects/MessageContracts/MessageContracts.csproj", "MyTestProjects/MessageContracts/"]
 RUN dotnet restore "MyTestProjects/MasstransitGrpcConsumerSample/MasstransitGrpcConsumerSample.csproj"
 COPY . .
 WORKDIR "/src/MyTestProjects/MasstransitGrpcConsumerSample"
