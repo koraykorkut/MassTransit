@@ -1,0 +1,23 @@
+version: '3.4'
+
+services:
+  grpcconsumertest:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "19701:19701"
+    networks:
+      - grpcnet
+
+  masstransitgrpcclienttest:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5180:80"
+    networks:
+      - grpcnet
+
+networks:
+  grpcnet:
+    name: grpcnet
+

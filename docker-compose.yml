@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+  grpcconsumertest:
+    image: ${DOCKER_REGISTRY-}masstransitgrpcconsumersample
+    build:
+      context: .
+      dockerfile: MyTestProjects/MasstransitGrpcConsumerSample/Dockerfile
+
+  masstransitgrpcclienttest:
+    image: ${DOCKER_REGISTRY-}masstransitgrpcclienttest
+    build:
+      context: .
+      dockerfile: MyTestProjects/MassTransitGrpcClientTest/Dockerfile
+

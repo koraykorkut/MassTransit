@@ -9,6 +9,7 @@ namespace MassTransit.GrpcTransport
     using Fabric;
     using Grpc.Core;
     using Grpc.Net.Client;
+    using Grpc.Net.Client.Configuration;
     using Internals;
     using MassTransit.Middleware;
     using Metadata;
@@ -110,14 +111,30 @@ namespace MassTransit.GrpcTransport
             _messageFabric.Probe(context);
         }
 
-        IGrpcClient GetClient(Uri address)
+        IGrpcClient GetClient(Uri address, string loadBalancerPolicy = null)
         {
+            ServiceConfig serviceConfig;
+
+            if (loadBalancerPolicy == null)
+                serviceConfig = null;
+            else if (loadBalancerPolicy == LoadBalancingConfig.RoundRobinPolicyName)
+            {
+                serviceConfig = new ServiceConfig { LoadBalancingConfigs = { new RoundRobinConfig() } };
+            }
+            else if (loadBalancerPolicy == LoadBalancingConfig.PickFirstPolicyName)
+            {
+                serviceConfig = new ServiceConfig { LoadBalancingConfigs = { new PickFirstConfig() } };
+            }
+            else
+                serviceConfig = null;
+
             var channel = HostMetadataCache.IsNetFramework
                 ? (ChannelBase)new Channel(address.Host, address.Port, ChannelCredentials.Insecure)
-                : GrpcChannel.ForAddress(address.GetLeftPart(UriPartial.Authority), new GrpcChannelOptions
+                : GrpcChannel.ForAddress(address.Scheme != "dns" ? address.GetLeftPart(UriPartial.Authority) : address.ToString(), new GrpcChannelOptions
                 {
                     Credentials = ChannelCredentials.Insecure,
                     MaxReceiveMessageSize = MaxMessageLengthBytes,
+                    ServiceConfig = serviceConfig 
                 });
 
             var client = new TransportService.TransportServiceClient(channel);
@@ -135,7 +152,7 @@ namespace MassTransit.GrpcTransport
 
             foreach (var server in _hostConfiguration.ServerConfigurations)
             {
-                var client = GetClient(server.Address);
+                var client = GetClient(server.Address, server.LoadbalancingPolicy);
 
                 _clients.Add(client);
 

@@ -20,5 +20,12 @@ namespace MassTransit
         /// </summary>
         /// <param name="address"></param>
         void AddServer(Uri address);
+
+        /// <summary>
+        /// Add a server with load balancing policy to connect to on startup as part of the message fabric
+        /// </summary>
+        /// <param name="address"></param>
+        /// <param name="loadBalancingPolicy"></param>
+        void AddServer(Uri address, string loadBalancingPolicy);
     }
 }

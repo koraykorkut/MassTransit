@@ -155,5 +155,10 @@
         {
             _serverConfigurations.Add(new GrpcServerConfiguration(address));
         }
+
+        public void AddServer(Uri address, string loadBalancingPolicy)
+        {
+            _serverConfigurations.Add(new GrpcServerConfiguration(address, loadBalancingPolicy));
+        }
     }
 }
